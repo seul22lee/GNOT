@@ -17,7 +17,7 @@ from utils import plot_heatmap
 
 if __name__ == "__main__":
 
-    model_path = '[Your model path]'
+    model_path = './data/checkpoints/heat2d_all_CGPTrel2_0520_13_22_06.pt'
     result = torch.load(model_path,map_location='cpu')
 
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     model.eval()
     with torch.no_grad():
         #### test single case
-        idx = 0
+        idx = 80
         g, u_p, g_u =  list(iter(test_loader))[idx]
         # u_p = u_p.unsqueeze(0)      ### test if necessary
         out = model(g, u_p, g_u)
@@ -69,25 +69,68 @@ if __name__ == "__main__":
 
 
         #### choose one to visualize
-        cm = plt.cm.get_cmap('rainbow')
+        cm = plt.colormaps['rainbow']
 
-        plot_heatmap(x, y, pred,cmap=cm,show=True)
-        plot_heatmap(x, y, target,cmap=cm,show=True)
+        # 3개 subplot 나란히
+        fig, axes = plt.subplots(1, 3, figsize=(15, 4))
 
+        sc0 = axes[0].scatter(x, y, c=pred, cmap=cm, s=2)
+        axes[0].set_title("Prediction")
+        fig.colorbar(sc0, ax=axes[0])
 
-        plt.figure()
-        plt.scatter(x, y, c=pred, cmap=cm,s=2)
-        plt.colorbar()
+        sc1 = axes[1].scatter(x, y, c=target, cmap=cm, s=2)
+        axes[1].set_title("Ground Truth")
+        fig.colorbar(sc1, ax=axes[1])
+
+        sc2 = axes[2].scatter(x, y, c=err, cmap=cm, s=2)
+        axes[2].set_title("Error (Pred - Target)")
+        fig.colorbar(sc2, ax=axes[2])
+
+        for ax in axes:
+            ax.set_xticks([])
+            ax.set_yticks([])
+
+        plt.tight_layout()
+        plt.savefig('pred_vs_target_vs_error.png', dpi=300)
         plt.show()
-        plt.figure()
-        plt.scatter(x, y, c=err, cmap=cm,s=2)
-        plt.colorbar()
-        plt.show()
-        plt.scatter(x, y, c=target, s=2,cmap=cm)
-        plt.colorbar()
-        plt.show()
 
 
 
+import pickle
+import matplotlib.pyplot as plt
+
+# 저장된 result.pkl 경로
+pkl_path = './data/checkpoints/heat2d_all_CGPTrel2_0520_13_22_06.pkl'
+
+# pkl 로드
+with open(pkl_path, 'rb') as f:
+    result = pickle.load(f)
+
+loss_train = result['loss_train']
+loss_val = result['loss_val']
+lr_history = result['lr_history']
+
+# loss plot
+plt.figure()
+for i in range(loss_train.shape[1]):
+    plt.plot(loss_train[:, i], label=f'train loss {i}')
+    plt.plot(loss_val[:, i], label=f'val loss {i}', linestyle='--')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend()
+plt.title("Loss History")
+plt.grid(True)
+plt.savefig('loss_history.png', dpi=300)
+plt.show()
+
+# lr plot
+plt.figure()
+plt.plot(lr_history)
+plt.xlabel('Iteration')
+plt.ylabel('Learning Rate')
+plt.title('LR Schedule')
+plt.grid(True)
+plt.savefig('lr_schedule.png', dpi=300)
+plt.show()
 
 

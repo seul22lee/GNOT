@@ -1,0 +1,30 @@
+
+# 가상환경 전체 제외
+gnot/
+.venv/
+env/
+
+# PyTorch, CUDA 관련 대형 라이브러리 제외
+*.so
+*.so.*
+*.pkl
+*.pt
+*.npy
+*.log
+*.h5
+
+# 캐시 및 기타 불필요 폴더
+__pycache__/
+*.egg-info/
+*.pyc
+*.pyo
+*.swp
+
+# 데이터 파일
+data/*.pkl
+data/dataset/*.pkl
+data/dataset/*.csv
+data/dataset/*.json
+data/dataset/*.txt
+data/dataset/*.h5
+data/dataset/*.hdf5
