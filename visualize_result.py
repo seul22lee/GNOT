@@ -1,5 +1,9 @@
 #!/usr/bin/env python  
-#-*- coding:utf-8 _*-
+
+=======
+# -*- coding:utf-8 -*-
+import os
+>>>>>>> initial commit
 import pickle
 import torch
 import numpy as np
@@ -15,6 +19,7 @@ from train import validate_epoch
 from utils import plot_heatmap
 
 
+<<<<<<< HEAD
 if __name__ == "__main__":
 
     model_path = './data/checkpoints/heat2d_all_CGPTrel2_0520_13_22_06.pt'
@@ -124,13 +129,17 @@ plt.savefig('loss_history.png', dpi=300)
 plt.show()
 
 # lr plot
+=======
+
 plt.figure()
 plt.plot(lr_history)
 plt.xlabel('Iteration')
 plt.ylabel('Learning Rate')
+<<<<<<< HEAD
 plt.title('LR Schedule')
 plt.grid(True)
 plt.savefig('lr_schedule.png', dpi=300)
 plt.show()
 
 
+=======
